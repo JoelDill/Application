@@ -5,7 +5,7 @@ package Performance;
 //Funciona correctament a l'hora d'haver d'aprofitar canals
 //Al tancar la connexió, consultem el socket que tenen assignat i veurem que és el mateix
 
-//Executar app, app2, app3, app4 i app5
+//Executar app, app2, app3, app4 i app5 abans
 
 import es.bsc.comm.Connection;
 import es.bsc.comm.MessageHandler;
