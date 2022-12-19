@@ -3,7 +3,7 @@ package Performance;
 
 
 //Funciona correctament a l'hora d'haver d'aprofitar canals
-//Al tancar la connexió, consultem el socket que tenen assignat i veurem que és el mateix
+//Al tancar la connexiÃ³, consultem el socket que tenen assignat i veurem que Ã©s el mateix
 
 //Executar app, app2, app3, app4 i app5
 
@@ -19,30 +19,21 @@ import es.bsc.comm.stage.Transfer;
 
 import java.io.IOException;
 
-public class AvaluacioRendiment1 {
-	
-	static Integer message_number = 1;
-	
-	static NIONode RemoteNode = new NIONode("127.0.0.50", 46400);
+public class AvaluacioRendiment2 {
 
-	static long start;
-	
 	protected static final TransferManager TM = new TransferManager();
+	
+    static Integer message_number = 1;
+	
+	static NIONode RemoteNode = new NIONode("127.0.0.40", 46300);
 	
 	public static void main(String[] args) throws CommException, InterruptedException {
     	
     	Handler h = new Handler();
         TM.init(NIOEventManager.class.getCanonicalName(), null, h);
         
-        NIONode nodeServer = new NIONode("127.0.0.40", 46300);
+        NIONode nodeServer = new NIONode("127.0.0.50", 46400);
         TM.startServer(nodeServer);
-        
-        start = System.currentTimeMillis();
-        
-        Connection c1= TM.startConnection(RemoteNode);
-        c1.sendCommand("Side 1 Message " + message_number);
-        c1.finishConnection();
-        
         
         TM.join();
       
@@ -71,35 +62,30 @@ public class AvaluacioRendiment1 {
             Object cmd = trnsfr.getObject();
             System.out.println("Received cmd " + cmd.toString());
             cnctn.finishConnection();
-            if(message_number<100) {
+            if(message_number<101) {
             	try {
             		Connection c_ans= TM.startConnection(RemoteNode);
+            		c_ans.sendCommand("Side 2 message " + message_number);
             		++message_number;
-            		c_ans.sendCommand("Side 1 message " + message_number);
             		c_ans.finishConnection();
             	} catch (InterruptedException e) {
             		// TODO Auto-generated catch block
             		e.printStackTrace();
             	}
             }
+            
         }
 
         @Override
         public void writeFinished(Connection cnctn, Transfer trnsfr) {
 
-            System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString());
+        	 System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString());
         }
 
         @Override
         public void connectionFinished(Connection cnctn) {
             System.out.println("Connection Finished " + cnctn);
-            
-            if(message_number==100) {
-            	long end= System.currentTimeMillis() - start;
-            	System.out.println("Temps tardat:" + end);
-            	TM.shutdown(true, cnctn);
-            }
-            
+            //System.exit(0);
         }
 
         @Override
