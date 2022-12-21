@@ -18,6 +18,8 @@ import es.bsc.comm.stage.Transfer;
 
 
 import java.io.IOException;
+import java.sql.Timestamp;
+
 
 public class AvaluacioRendiment1 {
 	
@@ -69,9 +71,10 @@ public class AvaluacioRendiment1 {
         @Override
         public void commandReceived(Connection cnctn, Transfer trnsfr) {
             Object cmd = trnsfr.getObject();
-            System.out.println("Received cmd " + cmd.toString());
+            //Timestamp timestamp= new Timestamp(System.currentTimeMillis());
+            System.out.println("Received cmd " + cmd.toString() + "  " + new Timestamp(System.currentTimeMillis()));
             cnctn.finishConnection();
-            if(message_number<100) {
+            if(message_number<1000) {
             	try {
             		Connection c_ans= TM.startConnection(RemoteNode);
             		++message_number;
@@ -82,19 +85,20 @@ public class AvaluacioRendiment1 {
             		e.printStackTrace();
             	}
             }
+            
         }
 
         @Override
         public void writeFinished(Connection cnctn, Transfer trnsfr) {
 
-            System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString());
+            System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString() + " " + new Timestamp(System.currentTimeMillis()));
         }
 
         @Override
         public void connectionFinished(Connection cnctn) {
-            System.out.println("Connection Finished " + cnctn);
+            System.out.println("Connection Finished " + cnctn + " " + new Timestamp(System.currentTimeMillis()));
             
-            if(message_number==100) {
+            if(message_number==1000) {
             	long end= System.currentTimeMillis() - start;
             	System.out.println("Temps tardat:" + end);
             	TM.shutdown(true, cnctn);

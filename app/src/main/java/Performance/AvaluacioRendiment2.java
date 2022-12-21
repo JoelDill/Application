@@ -2,10 +2,7 @@ package Performance;
 
 
 
-//Funciona correctament a l'hora d'haver d'aprofitar canals
-//Al tancar la connexió, consultem el socket que tenen assignat i veurem que és el mateix
 
-//Executar app, app2, app3, app4 i app5
 
 import es.bsc.comm.Connection;
 import es.bsc.comm.MessageHandler;
@@ -18,6 +15,7 @@ import es.bsc.comm.stage.Transfer;
 
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 public class AvaluacioRendiment2 {
 
@@ -60,9 +58,9 @@ public class AvaluacioRendiment2 {
         @Override
         public void commandReceived(Connection cnctn, Transfer trnsfr) {
             Object cmd = trnsfr.getObject();
-            System.out.println("Received cmd " + cmd.toString());
+            System.out.println("Received cmd " + cmd.toString() + " " + new Timestamp(System.currentTimeMillis()));
             cnctn.finishConnection();
-            if(message_number<101) {
+            if(message_number<1001) {
             	try {
             		Connection c_ans= TM.startConnection(RemoteNode);
             		c_ans.sendCommand("Side 2 message " + message_number);
@@ -75,17 +73,18 @@ public class AvaluacioRendiment2 {
             }
             
         }
-
+   
         @Override
         public void writeFinished(Connection cnctn, Transfer trnsfr) {
-
-        	 System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString());
+        	 System.out.println("Command sent " + trnsfr.getArray().length + " " + trnsfr.getObject().toString()+ " " + new Timestamp(System.currentTimeMillis()));
         }
 
         @Override
         public void connectionFinished(Connection cnctn) {
-            System.out.println("Connection Finished " + cnctn);
-            //System.exit(0);
+            System.out.println("Connection Finished " + cnctn+ " " + new Timestamp(System.currentTimeMillis()));
+            if(message_number==1001) {
+            	TM.shutdown(true, cnctn);
+            }
         }
 
         @Override
