@@ -2,10 +2,7 @@ package Performance;
 
 
 
-//Funciona correctament a l'hora d'haver d'aprofitar canals
-//Al tancar la connexió, consultem el socket que tenen assignat i veurem que és el mateix
 
-//Executar app, app2, app3, app4 i app5
 
 import es.bsc.comm.Connection;
 import es.bsc.comm.MessageHandler;
@@ -64,14 +61,12 @@ public class AplicacioParalela2 {
         @Override
         public void commandReceived(Connection cnctn, Transfer trnsfr) {
             Object cmd = trnsfr.getObject();
-            //Timestamp timestamp= new Timestamp(System.currentTimeMillis());
-            System.out.println("Received cmd " + cmd.toString());
+            System.out.println("Receivedcmd " + cmd.toString() + " " + cnctn);
+            ++message_number;
             cnctn.finishConnection();
-            try {
+           try {
         		Connection c_ans= TM.startConnection(RemoteNode);
-        		++message_number;
-        		Integer value = (Integer) cmd;
-        		c_ans.sendCommand(value+1);
+        		c_ans.sendCommand(message_number);
         		c_ans.finishConnection();
         	} catch (InterruptedException e) {
         		// TODO Auto-generated catch block
@@ -91,11 +86,11 @@ public class AplicacioParalela2 {
         public void connectionFinished(Connection cnctn) {
             System.out.println("Connection Finished " + cnctn);
             
-            /*if(message_number==1000) {
+            if(message_number==199) {
             	long end= System.currentTimeMillis() - start;
             	System.out.println("Temps tardat:" + end);
             	TM.shutdown(true, cnctn);
-            }*/
+            }
             
         }
 

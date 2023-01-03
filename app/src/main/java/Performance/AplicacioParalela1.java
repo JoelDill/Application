@@ -2,10 +2,7 @@ package Performance;
 
 
 
-//Funciona correctament a l'hora d'haver d'aprofitar canals
-//Al tancar la connexió, consultem el socket que tenen assignat i veurem que és el mateix
 
-//Executar app, app2, app3, app4 i app5
 
 import es.bsc.comm.Connection;
 import es.bsc.comm.MessageHandler;
@@ -23,7 +20,7 @@ import java.sql.Timestamp;
 
 public class AplicacioParalela1 {
 	
-	static Integer message_number = 1;
+	static Integer message_number = 0;
 	
 	static NIONode RemoteNode = new NIONode("127.0.0.50", 46400);
 
@@ -41,13 +38,15 @@ public class AplicacioParalela1 {
         
         start = System.currentTimeMillis();
         
-        Connection connexions[]= new Connection[100];
+        Connection connexions[]= new Connection[200];
         
-        for(int i=0;i<100;++i) {
+        for(int i=0;i<200;++i) {
         	connexions[i] = TM.startConnection(RemoteNode);
-        	connexions[i].sendCommand(0);
+        	connexions[i].sendCommand(i);
         	connexions[i].finishConnection();
         }
+        
+        
         
         
         TM.join();
@@ -75,8 +74,8 @@ public class AplicacioParalela1 {
         @Override
         public void commandReceived(Connection cnctn, Transfer trnsfr) {
             Object cmd = trnsfr.getObject();
-            //Timestamp timestamp= new Timestamp(System.currentTimeMillis());
             System.out.println("Received cmd " + cmd.toString());
+            ++message_number;
             cnctn.finishConnection();
         }
 
@@ -90,7 +89,7 @@ public class AplicacioParalela1 {
         public void connectionFinished(Connection cnctn) {
             System.out.println("Connection Finished " + cnctn + " " + new Timestamp(System.currentTimeMillis()));
             
-            if(message_number==1000) {
+            if(message_number==200) {
             	long end= System.currentTimeMillis() - start;
             	System.out.println("Temps tardat:" + end);
             	TM.shutdown(true, cnctn);
