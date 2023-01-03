@@ -60,6 +60,7 @@ public class AplicacioParalela2 {
 
         @Override
         public void commandReceived(Connection cnctn, Transfer trnsfr) {
+        	if(message_number == 0) start = System.currentTimeMillis();
             Object cmd = trnsfr.getObject();
             System.out.println("Receivedcmd " + cmd.toString() + " " + cnctn);
             ++message_number;
@@ -86,7 +87,7 @@ public class AplicacioParalela2 {
         public void connectionFinished(Connection cnctn) {
             System.out.println("Connection Finished " + cnctn);
             
-            if(message_number==199) {
+            if(message_number==200) {
             	long end= System.currentTimeMillis() - start;
             	System.out.println("Temps tardat:" + end);
             	TM.shutdown(true, cnctn);
